@@ -16,6 +16,7 @@ import EpubCFI from "./epubcfi";
 import Store from "./store";
 import DisplayOptions from "./displayoptions";
 import { EPUBJS_VERSION, EVENTS } from "./utils/constants";
+import AdvancedToc from "./advancetoc";
 
 const CONTAINER_PATH = "META-INF/container.xml";
 const IBOOKS_DISPLAY_OPTIONS_PATH = "META-INF/com.apple.ibooks.display-options.xml";
@@ -223,6 +224,13 @@ class Book {
 		 * @private
 		 */
 		this.displayOptions = undefined;
+
+		/**
+		 * @member {AdvancedToc} displayOptions
+		 * @memberof AdvancedToc
+		 * @private
+		 */
+		this.advanceToc = undefined;
 
 		// this.toc = undefined;
 		if (this.settings.store) {
@@ -519,10 +527,16 @@ class Book {
 	 * @private
 	 * @param {Packaging} packaging
 	 */
-	loadNavigation(packaging) {
+	async loadNavigation(packaging) {
 		let navPath = packaging.navPath || packaging.ncxPath;
 		let toc = packaging.toc;
 
+		const advancedTocUrl = this.resources.urls.find((url) => url.endsWith("advancetoc.ncx"));
+		if (advancedTocUrl) {
+			let advancetocData = await this.load(advancedTocUrl)
+			 this.advanceToc = new AdvancedToc();
+			 this.advanceToc.handleAdvancedToc(advancetocData);
+		}
 		// From json manifest
 		if (toc) {
 			return new Promise((resolve, reject) => {
