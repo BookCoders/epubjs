@@ -531,6 +531,33 @@ export function qsa(el, sel) {
 		return el.getElementsByTagName(sel);
 	}
 }
+/**
+ * Queries for the first matching child element within a given element.
+ * 
+ * @param {HTMLElement} el - The parent element within which to search for the selector.
+ * @param {string} sel - The CSS selector or tag name to search for.
+ * @returns {Element | null} - The first matching child element, or null if no match is found.
+ * @throws {Error} - Throws an error if no parent element is provided.
+ */
+export function qsDirectChild(el, sel) {
+    if (!el) {
+        throw new Error("No Element Provided");
+    }
+
+    // Convert to lowercase to match tag name case-insensitively
+    const selLower = sel.toLowerCase();
+
+    // Iterate over direct children of the element
+    for (let child of el.children) {
+        // Check if the tag name of the child matches the selector
+        if (child.tagName.toLowerCase() === selLower) {
+            return child;  // Return the first matching child
+        }
+    }
+
+    return null;  // If no matching child is found
+}
+
 
 /**
  * querySelector by property

@@ -1,4 +1,4 @@
-import {qs, qsa, querySelectorByType, filterChildren, getParentByTagName} from "./utils/core";
+import { qs, qsa, querySelectorByType, filterChildren, getParentByTagName, qsDirectChild } from "./utils/core";
 
 /**
  * Navigation Parser
@@ -321,15 +321,23 @@ class Navigation {
 			parent = parentNode.getAttribute("id");
 		}
 
+    // Create the base ncxItem object without mediaMap
+    const ncxItem = {
+        "id": id,
+        "href": src,
+        "label": text,
+        "subitems": subitems,
+        "parent": parent
+    };
 
-		return {
-			"id": id,
-			"href": src,
-			"label": text,
-			"subitems" : subitems,
-			"parent" : parent
-		};
-	}
+    // Check if the navPoint contains a mediaMap element
+    const mediaMapElement = qsDirectChild(item, "mediaMap");
+    if (mediaMapElement) {
+        ncxItem.mediaMap = this.parseMediaMap(item);  // Parse and add mediaItems
+    }
+
+    return ncxItem;
+}
 
 	/**
 	 * Load Spine Items
@@ -351,6 +359,50 @@ class Navigation {
 	 */
 	forEach(fn) {
 		return this.toc.forEach(fn);
+	}
+
+	/**
+	 * Parse mediaMap from a navPoint
+	 * @private
+	 * @param  {element} navPoint
+	 * @return {array} mediaItems
+	 */
+	parseMediaMap(navPoint) {
+		const mediaMap = qs(navPoint, "mediaMap");
+		if (!mediaMap) return [];
+
+		const mediaPoints = Array.from(qsa(mediaMap, "mediaPoint"));
+		const mediaItems = mediaPoints.map(mediaPoint => {
+			return {
+				"id": mediaPoint.getAttribute("id"),
+				"type": mediaPoint.getAttribute("type"),
+				"mediaType": mediaPoint.getAttribute("mediaType"),
+				"mediaSize": mediaPoint.getAttribute("mediaSize"),
+				"order": mediaPoint.getAttribute("order"),
+				"href": mediaPoint.getAttribute("href"),
+				"desc": qs(mediaPoint, "desc") ? qs(mediaPoint, "desc").textContent : "",
+				"mediaPath": this.parseMediaPath(mediaPoint)
+			};
+		});
+
+		return mediaItems;
+	}
+	
+	/**
+	 * Parse mediaPath from a mediaPoint
+	 * @private
+	 * @param  {element} mediaPoint
+	 * @return {object} mediaPath
+	 */
+	parseMediaPath(mediaPoint) {
+		const mediaPath = qs(mediaPoint, "mediaPath");
+		if (!mediaPath) return {};
+
+		return {
+			"src": mediaPath.getAttribute("src"),
+			"thumbSrc": mediaPath.getAttribute("thumbSrc"),
+			"alt": mediaPath.getAttribute("alt")
+		};
 	}
 }
 
