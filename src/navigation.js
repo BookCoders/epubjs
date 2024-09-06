@@ -321,23 +321,21 @@ class Navigation {
 			parent = parentNode.getAttribute("id");
 		}
 
-    // Create the base ncxItem object without mediaMap
-    const ncxItem = {
-        "id": id,
-        "href": src,
-        "label": text,
-        "subitems": subitems,
-        "parent": parent
-    };
+   		 const ncxItem = {
+   		     "id": id,
+   		     "href": src,
+   		     "label": text,
+   		     "subitems": subitems,
+   		     "parent": parent
+   		 };
 
-    // Check if the navPoint contains a mediaMap element
-    const mediaMapElement = qsDirectChild(item, "mediaMap");
-    if (mediaMapElement) {
-        ncxItem.mediaMap = this.parseMediaMap(item);  // Parse and add mediaItems
-    }
+    	const mediaMapElement = qsDirectChild(item, "mediaMap");
+    	if (mediaMapElement) {
+        	ncxItem.mediaMap = this.parseMediaMap(item);  // Parse and add mediaItems
+   		 }
 
-    return ncxItem;
-}
+    	return ncxItem;
+	}
 
 	/**
 	 * Load Spine Items
