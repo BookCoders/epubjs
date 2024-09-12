@@ -550,6 +550,7 @@ class Book {
 			return this.load(advancedTocUrl)
 			.then((xml) => {
 				this.navigation = new Navigation(xml);
+				this.navigation.addProperty('isEnhancedBook', true);
 				this.pageList = new PageList(xml);
 				return this.navigation;
 			});

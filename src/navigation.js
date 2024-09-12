@@ -18,6 +18,15 @@ class Navigation {
 			this.parse(xml);
 		}
 	}
+	
+	/**
+	 * add a new property to the object
+	 * @param  {string} key
+	 * @param {string} value
+	 */
+	addProperty(key, value) {
+        this[key] = value;
+    }
 
 	/**
 	 * Parse out the navigation items
