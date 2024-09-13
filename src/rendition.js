@@ -324,6 +324,7 @@ class Rendition {
 		var displayed = displaying.promise;
 		var section;
 		var moveTo;
+		var spineItem = undefined;
 
 		this.displaying = displaying;
 
@@ -331,7 +332,15 @@ class Rendition {
 		if (this.book.locations.length() && isFloat(target)) {
 			target = this.book.locations.cfiFromPercentage(parseFloat(target));
 		}
-
+		if(target)
+		{
+			target = target.replace(/^[/\.]+/, '');
+			const[pageName, section] = target.split('#')
+			spineItem = this.book.spine.items.find((item)=> item.href.includes(pageName) || pageName.includes(item.href))
+			if(spineItem)
+				target = spineItem.href + (section ? '#' + section : '');
+		}
+		
 		section = this.book.spine.get(target);
 
 		if(!section){
