@@ -3,7 +3,7 @@ import {extend, borders, uuid, isNumber, bounds, defer, createBlobUrl, revokeBlo
 import EpubCFI from "../../epubcfi";
 import Contents from "../../contents";
 import { EVENTS } from "../../utils/constants";
-import { Pane, Highlight, Underline } from "marks-pane";
+import { Pane, Highlight, Underline } from "../../marks/marks";
 
 class IframeView {
 	constructor(section, options) {
@@ -91,7 +91,7 @@ class IframeView {
 		this.iframe.style.border = "none";
 
 		// sandbox
-		this.iframe.sandbox = "allow-same-origin";
+		this.iframe.sandbox = "allow-scripts allow-popups allow-same-origin";
 		if (this.settings.allowScriptedContent) {
 			this.iframe.sandbox += " allow-scripts";
 		}
@@ -636,7 +636,7 @@ class IframeView {
 		return h;
 	}
 
-	underline(cfiRange, data={}, cb, className = "epubjs-ul", styles = {}) {
+	underline(cfiRange, data={}, cb, className = "epubjs-ul", styles = {}, underlineColor = 'black') {
 		if (!this.contents) {
 			return;
 		}
@@ -652,7 +652,7 @@ class IframeView {
 			this.pane = new Pane(this.iframe, this.element);
 		}
 
-		let m = new Underline(range, className, data, attributes);
+		let m = new Underline(range, className, data, attributes, underlineColor);
 		let h = this.pane.addMark(m);
 
 		this.underlines[cfiRange] = { "mark": h, "element": h.element, "listeners": [emitter, cb] };

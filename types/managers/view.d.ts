@@ -55,7 +55,7 @@ export default class View {
 
   highlight(cfiRange: string, data?: object, cb?: Function, className?: string, styles?: object): void;
 
-	underline(cfiRange: string, data?: object, cb?: Function, className?: string, styles?: object): void;
+	underline(cfiRange: string, data?: object, cb?: Function, className?: string, styles?: object, underlineColor?: string): void;
 
 	mark(cfiRange: string, data?: object, cb?: Function): void;
 
